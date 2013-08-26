@@ -7,6 +7,7 @@ tagline: Notes taken on rails for zombies redux course
 Reference: <http://railsforzombies.org/>
 
 ## Level 1: Deep in the CRUD
+
 Rails uses an ORM system to persist objects to a database and allow CRUD operations on this objects.
 If a class is called e.g. `Tweet`, then the corresponding database table will be called `tweets`. Ids will be taken care of by the rails framework.
 
@@ -62,6 +63,7 @@ Delete objects using the method `destroy` on individual objects, or `destroy_all
 	
 ## Level 2: Models taste like chicken
 ### Models
+
 Before using the model Tweet the class needs to be defined. This is saved in `app/modesl/tweet.rb` and defines a class which inherits from `ActiveRecord::Base` which maps the record to the table.
 
 	class Tweet < ActiveRecord::Base
@@ -69,6 +71,7 @@ Before using the model Tweet the class needs to be defined. This is saved in `ap
 	end
 	
 ### Validation
+
 To make fields mandatory use `validates_presence_of`.  
 Lots of other validators are availble to validate the model before allowing persistence to the database.
 
@@ -79,6 +82,7 @@ Alternative syntax for Rails 3 allows validations to be combined on a single lin
 	validates :status, :presence => true, :length => { :minimum => 3}
 
 ### Associations
+
 To express associations between objects e.g. between `Tweet`s and `Zombie`s there are the keywords `belongs_to` and `has_many` :
 
 	class Tweet < ActiveRecord::Base
@@ -133,16 +137,145 @@ When a resource is requested by the browser it will automatically be searched fo
 
 ### Adding a link
 
-To add a link use `<%= link_to [link text] [link path url] %>`  
-So to link to the page for that zombie use e.g. `<%= link_to tweet.zombie.name zombie_path(tweet.zombie) %>`  
-This can alternatively be written  `<%= link_to [link text] [object to show] %>`  
-e.g. `<%= link_to tweet.zombie.name tweet.zombie %>`  
+To add a link use `<%= link_to [link text], [link path url] %>`  
+So to link to the page for that zombie use e.g. `<%= link_to tweet.zombie.name, zombie_path(tweet.zombie) %>`  
+This can alternatively be written  `<%= link_to [link text], [object to show] %>`  
+e.g. `<%= link_to tweet.zombie.name, tweet.zombie %>`  
 
-### Checking builtin methods
+### Getting more info from the API documentation
 
 There are many options you can use with the method `link_to`.
 In order to find more information about this method:
 
-1. Git clone the rails code and use grep to search for that method name: `grep -r 'def link_to'`
-2. Use the online documentation at api.rubyonrails.org
-3. 
+1. `git clone` the rails code and use grep to search for that method name: `grep -r 'def link_to'`
+2. Use the online documentation at <api.rubyonrails.org>
+3. Searchable online documentation with comments at <apidock.com/rails>
+4. Use the rails searchable API doc at <railsapi.com>
+
+### link_to paths
+
+When using `link_to` there are various macros to generate the correct RESTful style / MVC style url.
+
+* `tweets_path` to show all the tweets (`/tweets`)
+* `new_tweet_path` to go to the page to add a new tweet (`/tweets/new`) 
+* `tweet_path(tweet)` or just `tweet` to go to the page for that tweet (e.g. `/tweets/1`)
+* `edit_tweet_path(tweet)` to go to the edit page for that tweet (e.g. `/tweets/1/edit`)
+* `tweet, :method => :delete` to delete a tweet (generates `/tweets/1`)
+
+## Level 4: Controllers must be eaten
+
+In the Ruby application stack, Models is at the bottom, then Controllers and then Views second from top. All requests initially go to the controller.
+
+* app
+	* models
+	* views
+	* controllers
+		* tweets_controllers.rb
+		
+### Naming conventions
+
+The name of the controller `tweets_controller` matches the path in the url `/tweets/`. 
+
+The controller class method name `show` also indicates the view which should be rendered, `show.html.erb`.
+
+	class TweetsController < ApplicationController
+		def show
+			@tweet = Tweet.find(params[:id])
+		end
+	end
+	
+There is a way to override the name of the view which will be rendered by using the following code inside the controller method:
+
+	render :action =>  'status' # will render a view call status.html.erb
+	
+
+### Variable scope
+
+All calls to the model will be moved from the view to the controller. Now the view code doesn't contain lots of Ruby code. The code in the controller action method will be executed and control passed to the view. Any variables required by the view will be marked with a `@`. The `@` symbol is then used both within the controller code and the view code.
+
+### Parameters
+
+Parameters in the query string GET variables or in the POST variables are passed to the controller in a hash called `params`.
+There are often nested hashes within the `params` hash.
+
+	params = {:tweet => {:status => "I'm dead"}}
+	
+To extract this value we can use `params[:tweet][:status]`.
+
+When creating a new tweet with this status, the code would be:
+
+	@tweet = Tweet.create(:status => params[:tweet][:status])
+	
+or alternatively, just pass the hash from the params into the create method:
+	
+	@tweet = Tweet.create(params[:tweet])
+	
+### Generating xml and json formats
+
+By default in ruby the convention for requesting the output in a different format is to append `.xml` or `.json` on the end of the url e.g. `/tweets/1.xml`.
+
+In the controller, the `respond_to` keyword is used:
+
+	class TweetsController < ApplicationController
+		def show			
+			@tweet = Tweet.find(params[:id])
+
+			respond_to { |format| 
+				format.html # show.html.erb
+				format.xml { render :xml => @tweet }
+				format.json { render :json => @tweet }
+			}
+		end
+	end
+
+This will automatically render the tweet in either xml or json.
+
+### Common controller actions
+
+	class TweetsController < ApplicationController
+		def index 	# show all items
+		def show		# show a single item
+		def new 		# show a create form
+		def edit 		# show an edit form
+		def create 	# create a new item
+		def update 	# update an item
+		def destroy	# delete an item
+	end
+	
+### Authorisation
+
+The session hash can be used to store e.g. the user's id and restrict edits to items only this user has created.
+
+	class TweetsController < ApplicationController
+		def edit
+			if session[:user_id] != @tweet.zombie_id
+				flash[:notice] = "Sorry, you can't edit this tweet"
+				redirect_to(tweets_path)
+			end
+		end
+	end
+	
+The flash hash is used to send messages to the user. To redirect the user back to a different controller, use the `redirect_to` method.
+
+In Rails 3 the redirection and notice can be combined:
+
+	redirect_to(tweets_path, :notice => "Sorry, you can't edit this tweet")
+	
+### Common code for several actions
+
+If there is common code which is called in several actions, this can be extracted to its own method.
+This method can be called by using the `before_filter` command which can specify a method to execute, as well as conditions when the method should be executed.
+
+	before_filter  :get_tweet, :only => [:edit, :update, :destroy]
+	before_filter  :check_auth, :only => [:edit, :update, :destroy]
+	
+	def get_tweet
+		@tweet = Tweet.find(params[:id])
+	end
+	def check_auth
+		if session[:user_id] != @tweet.zombie_id
+			redirect_to(tweets_path, :notice => "Sorry, you can't edit this tweet")
+		end
+	end
+
+## Level 5: Routing into darkness
