@@ -148,9 +148,9 @@ There are many options you can use with the method `link_to`.
 In order to find more information about this method:
 
 1. `git clone` the rails code and use grep to search for that method name: `grep -r 'def link_to'`
-2. Use the online documentation at <api.rubyonrails.org>
-3. Searchable online documentation with comments at <apidock.com/rails>
-4. Use the rails searchable API doc at <railsapi.com>
+2. Use the online documentation at <http://api.rubyonrails.org>
+3. Searchable online documentation with comments at <http://apidock.com/rails>
+4. Use the rails searchable API doc at <http://railsapi.com>
 
 ### link_to paths
 
@@ -279,3 +279,62 @@ This method can be called by using the `before_filter` command which can specify
 	end
 
 ## Level 5: Routing into darkness
+
+The final component in the ruby application stack is routing, sitting right at the top. Routes are required to properly find the paths for the link_to functions and find the actions.
+
+They are defined in a file called routes.rb in the config directory.
+
+* app
+	* models
+	* views
+	* controllers
+* config
+	* routes.rb
+	
+This file contains code to create a RESTful resource to generate several default routes:
+
+	ZombieTwitter::Application.routes.draw do |map| 
+		resources :tweets
+	end
+
+### Custom routes
+
+To specify custom routes:
+	
+	match 'new_tweet' => 'Tweets#new' # controller Tweets, action new
+	match 'all' => 'Tweets#index'
+	
+However, once you do this the usual `tweets_path` will still direct to `/tweets` instead of `/all`. We can define a path which will redirect to `/all` as part of the route, which we can then use with link_to.
+
+	match 'all' => 'Tweets#index', :as => 'all_tweets"'"
+
+	<%= link_to 'All tweets', all_tweets_path %>
+	
+### Redirects
+
+Alternatively we may want to keep `/tweets`, but redirect to this if someone enters `/all`. This is done using the `redirect` keyword:
+
+	match 'all' => redirect('/tweets')
+	match 'google' => redirect('http://www.google.com')
+
+The second example shows this mechanism being used to redirect outside of the application.
+
+### Root route
+
+Specify where the root of the application default to using the root route.
+
+	root :to => "Tweets#index"
+	
+Correspondingly the link_to is:
+	
+	<%= link_to "All tweets", root_path %>
+	
+### Route parameters
+
+By default a number after an action in the url is assigned to a variable called `id`, but an alternative variable name can be specified in the routing.
+
+	match "local_tweets/:zipcode" => "Tweets#index"
+	
+Another example uses a variable without specifying any controller (as in e.g. <http://www.twitter.com/user3>)
+
+	match ":name" => "Tweets#index"
