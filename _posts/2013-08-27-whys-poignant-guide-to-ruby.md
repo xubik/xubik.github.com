@@ -47,11 +47,143 @@ Arrays | A list surrounded by square brackets, a collection of things, but kept 
 Hashes | A dictionary surrounded by curly braces, matches words to definitions | `{'a' => 'aardvark', 'b' => 'badger'}`
 Regular expressions | Regex surrounded by slashes | `/ruby/`, `/[0-9]+/`, `/^\d{3}-\d{3}-\d{4}/`
 Operators | Required for maths or comparing things | !  ~  *  /  %  +  -  &
-Keywords | Ruby has a number of built-in words, imbued with meaning | return self super
+Keywords | Ruby has a number of built-in words, imbued with meaning | `return`, `self`, `super`
 
 ## Chapter 4 Floating Little Leaves of Code
 
+>By the end of this chapter, you will know Ruby’s beauty. The coziness of the code will become a down sleeping bag for your own solace.
+
 ### Animal perfect mission statement
+
+	blue_crystal = 1
+	leaf_tender = 5
+	
+>The equals sign is used for assignment. **This concept right here is half of Ruby**. We’re defining. We’re creating. This is half of the work. Assignment is the most basic form of defining.
+
+	pipe.catch_a_star
+
+>Variable `pipe`. Method `catch_a_star.` A lot of Rubyists like to think of methods as a message. Whatever comes before the dot is handed the message. The above code tells the `pipe` to `catch_a_star`.
+>**This is the second half of Ruby**. Putting things in motion. These things you define and create in the first half start to act in the second half.
+
+	captive_star = pipe.catch_a_star
+
+>It’s up to you to collect the miserable, little star. If you don’t, it’ll simply vanish. 
+
+	starmonkey = ratchet.attach( captive_monkey, captive_star )
+	starmonkey = ratchet.attach( captive_monkey, pipe.catch_a_star ) + deco_hand_frog
+
+### Nil
+
+`nil` represents emptiness, without value. It is **not** undefined, Ruby knows about it, and it is `nil`.
+
+### False
+
+`nil` and `false` are the only two negative concepts in Ruby.  
+Everything else is positive.
+
+	if plastic_cup
+	  print "Plastic cup is on the up 'n' up!"
+	end
+
+If `plastic_cup` is either `nil` or `false`, nothing will be printed.
+
+	unless plastic_cup
+	  print "Plastic cup is on the down low."
+	end
+
+Conversely using `unless` will only print to the screen if `plastic_cup` is either `nil` or `false`.
+
+`if` and `unless` can also be used at the end of a line of code:
+
+	print "Yeah, plastic cup is up again!" if plastic_cup
+	print "Hardly. It's down." unless plastic_cup
+
+or combined:
+	
+	print "We're using plastic 'cause we don't have glass." if plastic_cup unless glass_cup
+	# do this only if a is true and b isn’t true.
+	
+### Double equals is a method
+
+	approaching_guy.==( true )
+	
+This method will return true or false. In this case it will return `true` if `approaching_guy` is neither `nil` nor `false`.
+
+Assignment can be used in conjunction with if:
+
+	at_hotel = true
+	email = if at_hotel
+	          "why@hotelambrose.com"
+	        else
+	          "why@drnhowardcham.com"
+	        end
+			
+If there are several lines of code in the `if` statement **only the answer from the last full statement will be used**.
+
+### << is the concatenation operator
+
+	address = "5 Oxford Street"
+	address.<<(", London") # OR address << ", London"
+	
+### nil?
+
+The `nil?` method can be used on any value in Ruby. Obviously if value is either `true` or `false`, then it is not `nil`. `nil` is again, not the same as undefined.  
+
+If you use a variable without declaring it, a `NameError` exception will be thrown.
+
+### Hashes
+
+A value from a hash or dictionary of code words can be retrieved using the `[]` method.
+
+	code_words.[]( 'catapult' ) # OR code_words['catapult']
+
+### File operations
+
+	require 'wordlist'
+	
+	# Get evil idea and swap in code words
+	print "Enter your new idea: " 
+	idea = gets
+	code_words.each do |real, code|
+		idea.gsub!( real, code ) 
+	end
+	
+	# Save the jibberish to a new file
+	print "File encoded. Please enter a name for this idea: " 
+	idea_name = gets.strip
+	File::open( "idea-" + idea_name + ".txt", "w" ) do |f|
+		f << idea 
+	end
+
+This starts with the kernel method `require` which can be used anywhere and will pull in the contents of an external file, in this case called wordlist.rb. 
+
+Input from the terminal is stored in `idea`, and then for each entry in the dictionary a replacement is done using `gsub!`, short for _global substitution_, used for search and replace
+
+The `each` method is available for Arrays, Hashes and Strings and in this case will iterate over each pair in the hash.
+
+The coded idea is then saved to a file. It is important to call `strip` on the input from `gets` since this will remove the `\n` on the end.
+
+The class method `File::open` is used to create a new file. In fact all the kernel methods so far mentioned are actually class methods. 
+
+	Kernel:: print( "hello world" )
+
+>What does this mean? Why does it matter? It means `Kernel` is the center of Ruby’s universe. Wherever you are in your script, `Kernel` is right beside you. You don’t even need to spell `Kernel` out for Ruby. Ruby knows to check `Kernel`.
+
+The `File` class contains many methods to  read, rename, delete files. The `File::open` method takes two variables, the filename and the file mode. `w` is write to a new file, `r` is read from a file, `a` is append to a file. The file is opened and a variable is returned to represent the file, in this case called `f`. We can use the operator `<<` to write to the file, since this method is defined on files.
+
+	require 'wordlist'
+
+	# Print each idea out with the words fixed
+	Dir['idea-*.txt'].each do |file_name| 
+		idea = File.read( file_name ) 
+		code_words.each do |real, code|
+			idea.gsub!( code, real ) 
+		end
+		puts idea
+	end
+
+
+
 
 
 
