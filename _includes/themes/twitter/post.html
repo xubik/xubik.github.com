@@ -1,13 +1,13 @@
 <div class="page-header">
+    <div class="date">
+      <p>{{ page.date | date: "%d") }}<span>{{ page.date | date: "%b") }}</span></p>
+    </div>
     <h1>{{ page.title }}</h1>
     <div class="tagline">{% if page.tagline %} <small>{{ page.tagline }}</small>{% endif %}</div>
 </div>
 
 <div class="row-fluid post-full">
   <div class="span12">
-    <div class="date">
-      <span>{{ page.date | date_to_long_string }}</span>
-    </div>
     <div class="content">
       {{ content }}
     </div>

@@ -1,0 +1,25 @@
+---
+layout: post
+title: Getting Firefox to work with Windows authentication
+categories:
+- Programming
+tags: []
+status: publish
+type: post
+published: true
+meta:
+  jabber_published: '1293427221'
+---
+There are 3 settings you need to change in Firefox in order to get Firefox to work with Windows authentication.
+
+In the address bar, type about:config
+
+Find the following 3 properties:
+<ul>
+	<li>network.automatic-ntlm-auth.trusted-uris</li>
+	<li>network.negotiate-auth.delegation-uris</li>
+	<li>network.negotiate-auth.trusted-uris</li>
+</ul>
+You need to add the server you wish to authenticate to the end of the value associated with the property, so it should read something like “localhost, myserver.com”.
+
+via <a href="http://www.thinksynergy.co.uk/2009/12/16/getting-firefox-to-work-with-windows-authentication/">Getting Firefox to work with Windows authentication | Web Design Harrogate – Thinksynergy.co.uk</a>.

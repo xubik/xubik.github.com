@@ -3,7 +3,7 @@ layout: post
 title: "Simple homestyle curry"
 description: ""
 category: food
-tags: []
+tags: curry
 ---
 {% include JB/setup %}
 

@@ -1,6 +1,7 @@
 ---
 layout: post
-tagline: Notes from the only guide to Ruby
+title: Why's Poignant Guide To Ruby
+tagline: Notes from an esoteric guide to Ruby
 ---
 {% include JB/setup %}
 
@@ -169,7 +170,13 @@ The class method `File::open` is used to create a new file. In fact all the kern
 
 >What does this mean? Why does it matter? It means `Kernel` is the center of Ruby’s universe. Wherever you are in your script, `Kernel` is right beside you. You don’t even need to spell `Kernel` out for Ruby. Ruby knows to check `Kernel`.
 
-The `File` class contains many methods to  read, rename, delete files. The `File::open` method takes two variables, the filename and the file mode. `w` is write to a new file, `r` is read from a file, `a` is append to a file. The file is opened and a variable is returned to represent the file, in this case called `f`. We can use the operator `<<` to write to the file, since this method is defined on files.
+The `File` class contains many methods to read, rename, delete etc files. The `File::open` method takes two variables, the filename and the file mode:
+
+* `w` to write to a new file
+* `r` to read from a file
+* `a` to append to a file
+
+The file is opened and a variable is returned to represent the file, in this case called `f`. We can use the operator `<<` to write to the file, since this method is defined on files.
 
 	require 'wordlist'
 
@@ -181,10 +188,161 @@ The `File` class contains many methods to  read, rename, delete files. The `File
 		end
 		puts idea
 	end
+	
+`Dir[path]` searches a directory and returns a list of all matching files in the directory specified. This is an alternative for `Dir.[](path)` which is an alternative for `Dir::[](path)`.
+`File.open` is alternative syntax for `File::open`.
+
+Although the `.` notation can also be used for class methods, using `::` makes it more obvious that you are using a class method rather than an instance method.
+
+### p
+`p` is similar to `print` and `puts`, but will display anything (where `print` is only designed for displaying strings).
+
+>`p foo` does `puts foo.inspect`, i.e. it prints the value of `inspect` instead of `to_s`, which is more suitable for debugging (because you can e.g. tell the difference between 1, "1" and "2\b1", which you can't when printing without inspect).  
+>Ruby documenation: <http://www.ruby-doc.org/core-2.0.0/Kernel.html#M005961>  
+>Note that `p` also returns the value of the object, while `puts` does not. 
+Reference: <http://stackoverflow.com/questions/1255324/p-vs-puts-in-ruby>
+
+### ::methods
+
+This method will list all the methods available on an object
+
+### Using hashes as quick and dirty custom data structures
+
+Define a custom class `kitty_toy` which has a `:shape` and a `:fabric`. Then instantiate a number of these, put them in a list and then sort them according to one attribute or another.
+
+Alternatively create several hashes with the same keys, add these to a list and sort according to common keys in each hash.
+
+	kitty_toys = [
+	  {:shape => 'sock', :fabric => 'cashmere'},
+	  {:shape => 'mouse', :fabric => 'calico'},
+	  {:shape => 'eggroll', :fabric => 'chenille'}
+	]
+	kitty_toys.sort_by { |toy| toy[:fabric] }
+
+This will throw an `ArgumentError` if one of the hashes does not contain this key.
 
 
+The `sort_by` method is an **iterator** which will iterate through the list of hashes.
 
+### next
 
+`next` will let you skip onto the next item in an iteration.
+
+	non_eggroll = 0
+	kitty_toys.each do |toy|
+	  next if toy[:shape] == 'eggroll'
+	  non_eggroll = non_eggroll + 1
+	end
+
+### break
+
+`break` kicks you out of an iterating loop altogether.
+
+	kitty_toys.each do |toy|
+	  break if toy[:fabric] == 'chenille'
+	  p toy
+	end
+
+## Chapter 5 Them What Make the Rules and Them What Live the Dream
+
+### case..when
+
+Either with or without else
+
+### ===
+
+The triple equals checks equality in a _flexible_ way. It depends on context.
+`(1895..1913) === 1896` is true.
+`(1895..1913) === 2008` is false.
+
+### scope
+
+Variables declared outside of methods cannot normally be seen inside them. Blocks **do** see variables outside of them. Block arguments do not exist outside of the block. 
+
+**Note** If block arguments are named the same as an existing variable, the contents of the variable will be overwritten and the variable available with the changed argument after the block exits.
+
+`@` denotes an instance level variable, available to all methods in that instance.
+`@@` denotes a class level variable, available to all instances of that class.
+`$` denotes a global variable, available everywhere.
+
+### def and class
+
+`def` is used to define a method.
+
+`class` is used to define a class.
+
+Everything in ruby is an object and the `class` method will return the name of the class of any object.
+
+	print 5.class							# prints 'Integer' 
+	print 'wishing for antlers'.class	# prints 'String' 
+	print WishMaker.new.class			# prints 'WishMaker'
+
+### Inspecting metadata
+
+`Object::constants` will list all top-level constants. This will also list all loaded classes.  
+`Hash::methods` will list all the methods of a certain class  
+`Hash::class_variables` lists the class variables  
+`Hash::constants` lists the constants for a particular class  
+
+### Checking method arguments
+
+It is good practice to check any method arguments. `include?` works fine with strings, arrays, hashes etc but this method is not defined for a number, so will throw an exception. 
+
+Rather than checking the type of the argument, you can just check if a certain method is defined for that type using `responds_to` (which returns `true` or `false`).
+
+	def wipe_mutterings_from( sentence ) 
+		unless sentence.respond_to? :include?
+			raise ArgumentError,
+			"cannot wipe mutterings from a #{ sentence.class }"
+		end
+		...
+	end
+
+#### Using symbols
+
+In the example above a symbol `:include` was used. Symbols are generally used when referring to a method or other Ruby construct. Strings will work too, but Ruby will recognise symbols faster.
+
+#### Changing method arguments
+
+Ruby convention is to not change any arguments unless the method ends in `!`. A useful method to work with arguments but to make sure they aren't changed is `dup`.
+
+	sentence = sentence.dup 
+	
+So the variable sentence is a reference type (the address of memory in Ruby). `dup` will create a new object on the heap and return the address of this object. The original will not be changed and the original `sentence` will still hold the address of the original object.
+
+Numbers and symbols can't be `dup`ed.
+
+### while and until
+
+It is better to use an iterator instead of `while` and `until`
+
+### self
+
+`self` is a special variable and can be used within a class to represent the object upon which this method is being called.
+
+### collect
+
+`collect` is very similar to `each` in that it returns an iterator. The difference is that `collect` keeps the answer the block gives back and adds it to a new array. 
+
+The following code iterates over an array, operating on each item and returning the results in a corresponding array.
+
+	catsandtips = [0.12, 0.63, 0.09].collect { |catcost| catcost + ( catcost * 0.20 ) }
+
+### Inheritance
+
+This is denoted using a single angle bracket `<`:
+
+	class ToastyBear < Object; end
+
+Here the "inheritance from `Object`" is actually unnecessary since all objects in Ruby will inherit from `Object` by default. Although you can extend the default classes in Ruby directly, inheritance can also be used to extend and existing type and add your own methods. This way the original is not affected.
+
+The method `is_a?` can be used to check the type of an object.
+
+`MyObject.superclass` can be called on any object to determine the inheritance hierarchy. Every object in Ruby derives from the `Object` class.
+
+### Modules
+
+Modules can be used to group code, similar to namespaces. The `extend` keyword is used to pull all methods from a module into a class or object.
 
 
 

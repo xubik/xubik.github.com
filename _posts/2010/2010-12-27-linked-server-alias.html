@@ -1,0 +1,17 @@
+---
+layout: post
+title: Linked server alias
+categories:
+- Programming
+tags:
+- sql
+status: publish
+type: post
+published: true
+meta:
+  jabber_published: '1293421278'
+---
+Add a linked server using a different name <strong>or</strong> add a reference to the local server using a different name (handy if importing databases which used to be on different servers, but temporarily on the same server).
+<blockquote>
+<pre>sp_addlinkedserver 'Alias', '', 'SQLOLEDB', 'ServerName'</pre>
+</blockquote>
