@@ -4,26 +4,26 @@ tagline: Trying to make some sense
 ---
 {% include JB/setup %}
 
-##All courses
-###Websites
+## All courses
+### Websites
 
-P Build a simple website (B) (5)
+P Build a simple website (B) (5) DONE
 P Build a responsive website (I) (5)
 P Build an interactive website (A) (5)
 P How to make a wordpress blog (B)
 P How to build a wordpress theme (I)
 
-D HTML (7)
+D HTML (7) DONE
 D CSS Foundations (13)
-D Website Basics
+D Website Basics (1)
 D Aesthetic Foundations (3)
 D JavaScript Foundations (6)
-D Photoshop Foundations
+D Photoshop Foundations (7)
 D Accessibility
-D Technology Foundations
+D Technology Foundations (3)
 D Illustrator Foundations
 
-###Programmer
+### Programmer
 
 P Build a simple ruby on rails application (B)
 P Build social features on ruby on rails (I)
@@ -36,11 +36,12 @@ D Ruby foundations (14)
 D Introduction to programming (4)
 D Console foundations (5)
 
-###Business
+### Business
 
 P How to start a business (B)
 P How to market your business (I) (6)
 P How to build your company (A)
+P How to freelance (B)
 
 D Careers foundations (8)
 D Copyright basics (4)
@@ -64,8 +65,8 @@ P Build a blog reader android app
 ## Learning Adventures
 ### Become a web designer (54) #1
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 WEB D CSS Foundations (13)
 WEB D Aesthetic Foundations (3)
 WEB P Build a responsive website (I) (5)
@@ -76,8 +77,8 @@ BUS P How to market your business (6)
 
 ### Become a web developer #3
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 WEB D CSS Foundations (13)
 PRG D Introduction to programming (4)  
 PRG D Console foundations
@@ -87,16 +88,16 @@ PRG P Build social features on ruby on rails (I)
 
 ### Learn HTML and CSS #2
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 WEB D CSS Foundations (13)
 WEB P Build a responsive website (I) (5)
 WEB D Accessibility
 
 ### Learn Ruby on Rails #5
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 WEB D CSS Foundations (13)
 WEB P Build a responsive website (I) (5)
 PRG D Introduction to programming (4)  
@@ -126,14 +127,14 @@ AND P Build a blog reader android app
 BUS P How to start a business (B)
 BUS P How to market your business (6) (I)
 BUS P How to build your company (A)
-WEB P Build a simple website (B)
+WEB P Build a simple website (B) DONE
 PRG D Introduction to programming (4)  
 PRG P Build a simple PHP application (B)
 
 ### Learn JavaScript and jQuery #4
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 WEB D CSS Foundations (13)
 WEB P Build a responsive website (I) (5)
 PRG D Introduction to programming (4)  
@@ -143,22 +144,24 @@ WEB D Accessibility
 
 ### Become a PHP developer #8
 
-WEB P Build a simple website (B) (5)
-WEB D HTML (7)
-PRG P Build a simple PHP application (B)
+WEB P Build a simple website (B) (5) DONE
+WEB D HTML (7) DONE
 PRG D Introduction to programming (4)  
-PRG P Enhancing a simple PHP application (I)
+PRG P Build a simple PHP application (B) (7)
+PRG P Enhancing a simple PHP application (I) (8)
+D Database Foundations (9)
+P Using PHP with MySQL (5)
 WEB D CSS Foundations (13)
 WEB D JavaScript Foundations (6)
 WEB P Build an interactive website (A) (5)
-PRG D Console foundations
+PRG D Console foundations (5)
 
 ### Learn WordPress #7
 
-P How to make a wordpress blog (B)
-WEB P Build a simple website (B)
+WEB P How to make a wordpress blog (B)
+WEB P Build a simple website (B) DONE
 PRG P Build a simple PHP application (B)
-P How to build a wordpress theme (I)
+WEB P How to build a wordpress theme (I)
 
 ### Become a Mobile Developer #9
 

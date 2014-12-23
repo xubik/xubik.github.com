@@ -8,8 +8,14 @@ Reference: <http://railsforzombies.org/>
 
 ## Level 1: Deep in the CRUD
 
+Hash Recipe: `variable = { key: value }` 
+(this is new ruby syntax where `key: value` is short for `:key => value`)
+
+Read Recipe:  `variable[:key] => value`
+
 Rails uses an ORM system to persist objects to a database and allow CRUD operations on this objects.
 If a class is called e.g. `Tweet`, then the corresponding database table will be called `tweets`. Ids will be taken care of by the rails framework.
+Class methods allow you 
 
 ### Create
 
@@ -29,11 +35,12 @@ Or all in one line using create
 	
 	Tweet.create(:status => "I <3 brains", :zombie => "Jim")
 	
+
 ### Read
 
 There are lots of ways to read information from the database:
 
-	Tweet.find(2)			# find by id
+	Tweet.find(2)		# find by id
 	Tweet.find(3,4,5)	# return multiple objects
 	Tweet.first			# returns the first tweet
 	Tweet.last
@@ -41,9 +48,12 @@ There are lots of ways to read information from the database:
 	Tweet.count			# returns the result of a select count(*) on the database
 	Tweet.order(:zombie)	# return the tweets ordered by :zombie
 	Tweet.limit(10)		# just 10 tweets
-	Tweet.where(:zombie = "Ash")
-	Tweet.where(:zombie = "Ash").order(:zombie).limit(10)
+	Tweet.where(:zombie == "Ash")
+	Tweet.where(zombie: "Ash")
+	Tweet.where(:zombie == "Ash").order(:status).limit(10)
+	Tweet.where(zombie: "Ash").order(:status).limit(10)
 	
+
 ### Update
 
 Update an attribute and resave, or use `t.attributes` to assign a hash with the updates and then save.
@@ -52,7 +62,7 @@ Update an attribute and resave, or use `t.attributes` to assign a hash with the 
 	t.attributes = {:status => "I really <3 brains", :zombie => "EyeballChomper"}
 	t.save
 
-Finally use the `update_attributes` method to automatically save.
+Finally the `t.update(hash)` method to automatically update and save the entity back to the database.
 
 ### Delete
 
@@ -61,15 +71,24 @@ Delete objects using the method `destroy` on individual objects, or `destroy_all
 	Tweet.find(2).destroy
 	Tweet.destroy_all
 	
+
 ## Level 2: Models taste like chicken
+
+In a rails application stack there are 4 components:
+* Views
+* Models
+* XX
+* XX
+
 ### Models
 
-Before using the model Tweet the class needs to be defined. This is saved in `app/modesl/tweet.rb` and defines a class which inherits from `ActiveRecord::Base` which maps the record to the table.
+Before using the model Tweet the class needs to be defined. This is saved in `app/models/tweet.rb` and defines a class which inherits from `ActiveRecord::Base` which maps the record to the table.
 
 	class Tweet < ActiveRecord::Base
 		validates_presence_of :status
 	end
 	
+
 ### Validation
 
 To make fields mandatory use `validates_presence_of`.  
@@ -93,6 +112,9 @@ To express associations between objects e.g. between `Tweet`s and `Zombie`s ther
 		has_many :tweets
 	end
 	
+
+This relationship may be specified in one direction only (either way), or both.
+
 To save a new tweet, retrieve the required zombie and then use create, passing in this zombie.
 
 	z = Zombie.find(3)
@@ -106,7 +128,7 @@ Rails applications are organised by folder:
 * app
 	* views
 		* layouts
-			* application.html.erb # main layout
+			* application.html.erb # main layout boilerplate html code (headers etc)
 		* zombies
 		* tweets
 			* index.html.erb # lists all tweets
@@ -117,18 +139,18 @@ Rails applications are organised by folder:
 	* javascripts
 	* images
 
-`.erb` stands for Embedded Ruby
+`.erb` stands for Embedded Ruby, which embeds ruby code inside html
 
 ### Tags used in html files
 
 `<% %>` to evaluate Ruby  
 `<%= %>` to evaluate Ruby and print the result  
-To indicate where to add the main content in the template file use `<%=yield%>`  
+To indicate where to add the main content in the application.html.erb template file use `<%=yield%>`  
 
 ### Additional layout components
 
 `<%= stylesheet_link_tag :all %>` will write out the appropriate html to include all stylesheets in the public/stylesheets directory  
-`<%= javascript_include_tag :defaults %>` will inlude all the default javascript (jquery from Rails 3.1)
+`<%= javascript_include_tag :defaults %>` will include all the default javascript (jquery from Rails 3.1)
 `<%= csrf_meta_tag %>` cross site request forgery meta tag will add meta tags to the top of the doc and other tags to forms
 
 ### Root path and images
@@ -147,7 +169,7 @@ e.g. `<%= link_to tweet.zombie.name, tweet.zombie %>`
 There are many options you can use with the method `link_to`.
 In order to find more information about this method:
 
-1. `git clone` the rails code and use grep to search for that method name: `grep -r 'def link_to'`
+1. `git clone` the rails code and use grep to search for that method name: `grep -rin 'def link_to'`
 2. Use the online documentation at <http://api.rubyonrails.org>
 3. Searchable online documentation with comments at <http://apidock.com/rails>
 4. Use the rails searchable API doc at <http://railsapi.com>
@@ -158,9 +180,12 @@ When using `link_to` there are various macros to generate the correct RESTful st
 
 * `tweets_path` to show all the tweets (`/tweets`)
 * `new_tweet_path` to go to the page to add a new tweet (`/tweets/new`) 
-* `tweet_path(tweet)` or just `tweet` to go to the page for that tweet (e.g. `/tweets/1`)
+* `tweet_path(tweet)` or just `tweet` to go to the page for that tweet (e.g. `/tweets/1` or `tweets/1/show`)
 * `edit_tweet_path(tweet)` to go to the edit page for that tweet (e.g. `/tweets/1/edit`)
 * `tweet, :method => :delete` to delete a tweet (generates `/tweets/1`)
+
+These all follow the recipe:
+`<%= link_to text_to_show, code %>`
 
 ## Level 4: Controllers must be eaten
 
@@ -196,7 +221,7 @@ All calls to the model will be moved from the view to the controller. Now the vi
 ### Parameters
 
 Parameters in the query string GET variables or in the POST variables are passed to the controller in a hash called `params`.
-There are often nested hashes within the `params` hash.
+There are often nested hashes within the `params` hash (i.e. called with e.g. /tweets?tweet[status]=I'm dead)
 
 	params = {:tweet => {:status => "I'm dead"}}
 	
@@ -210,6 +235,9 @@ or alternatively, just pass the hash from the params into the create method:
 	
 	@tweet = Tweet.create(params[:tweet])
 	
+
+NOTE: In Rails 4 strong paramters are required. This means in the controller you need to specify which models are required and which paramters for that model are permitted. Only required for creates or updates.
+
 ### Generating xml and json formats
 
 By default in ruby the convention for requesting the output in a different format is to append `.xml` or `.json` on the end of the url e.g. `/tweets/1.xml`.
