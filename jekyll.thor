@@ -1,4 +1,6 @@
 require "stringex"
+
+# usage thor jekyll:new "Name of Post"
 class Jekyll < Thor
   desc "new", "create a new post"
   method_option :editor, :default => "subl"
@@ -19,7 +21,7 @@ class Jekyll < Thor
       post.puts "---"
       post.puts "{% include JB/setup %}"
       post.puts ""
-      post.puts "##"
+      post.puts "## "
     end
 
     system(options[:editor], filename)

@@ -66,7 +66,7 @@ A search on http://www.mysite.com/Search?q=Lager often reflects the search term 
 
 ## Insecure direct object references
 
-Manually changing query string to gain access to data.
+A direct object reference is an observable key used to identify an individual database record. E.g. manually changing query string to gain access to data.
 
 ### Common defences
 
@@ -81,7 +81,7 @@ Broad risk, covering a number of things. Basically an attacker gains access to a
 * Unnecessary features enabled?
 * Default credentials?
 * Internal implementation data exposed in error messages?
-* Security settings not set to secure values? 
+* Security settings not set to secure values?
 
 ### Common defences
 
@@ -126,7 +126,8 @@ E.g. Admin user logs into a web application, makes an authenticated request for 
 
 ## Cross-site Request Forgery (CSRF / XSRF)
 
-Imagine an attacker share a malicious link with a user. User clicks a link and their site is loaded into the user's browser along with a malicious request which loads the target website. If the user has an authentication cookie for the target website this will automatically be sent with the request - however the contents of the request did not come from the user, but from the attacker. So if e.g. the request contains an amount of money to transfer to a bank account, the user can submit this to their own banking website unwittingly.
+A user has to be tricked into submitting a "forged" request to a site which they are already authenticated on (e.g. via a live authentication cookie in their cookie store)
+Imagine an attacker shares a malicious link with a user. User clicks a link and their site is loaded into the user's browser along with a malicious request which loads the target website. If the user has an authentication cookie for the target website this will automatically be sent with the request - however the contents of the request did not come from the user, but from the attacker. So if e.g. the request contains an amount of money to transfer to a bank account, the user can submit this to their own banking website unwittingly.
 
 ### Common defences
 

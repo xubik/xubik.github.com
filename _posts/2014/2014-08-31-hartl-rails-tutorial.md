@@ -8,7 +8,7 @@ tags: []
 
 ### Set up
 
-* `rails new project_name`
+* `rails new project_name` (or `rails new project_name --database=postgresql`)
 * `cd project_name`
 * `subl .` to open the new project directory in sublime text
 * Edit the Gemfile
